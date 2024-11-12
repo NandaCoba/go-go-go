@@ -106,7 +106,7 @@ const App = () => {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
-      <h1 className="text-3xl font-bold text-center mb-8">User Management System</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-black">User Management <span className=' text-blue-400'>System</span></h1>
       
       {/* Form Section */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">

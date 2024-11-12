@@ -1,9 +1,9 @@
 package main
 
 import (
-	"belajar/controller"
+	"belajar/controllers"
 	"belajar/db"
-	"belajar/utils"
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -16,78 +16,71 @@ func main() {
 	db.Koneksi()
 
 	app.Get("/", func(c *fiber.Ctx) error {
-		data, err := controller.GetAll()
-		if utils.SendError(err) {
-			c.Status(500).JSON(fiber.Map{
-				"message": "Failed get all data",
-			})
-		}
-		return c.Status(200).JSON(fiber.Map{
-			"data": data,
-		})
-	})
+		data, err := controllers.GetAll()
 
-	app.Get("/:id", func(c *fiber.Ctx) error {
-		id := c.Params("id")
-		idInt, _ := strconv.Atoi(id)
-		data, err := controller.GetId(idInt)
-		if utils.SendError(err) {
-			c.Status(500).JSON(fiber.Map{
-				"message": "Failed get data user id",
-			})
+		if err != nil {
+			fmt.Println("gagal get all users")
 		}
+
 		return c.Status(200).JSON(fiber.Map{
 			"data": data,
 		})
 	})
 
 	app.Post("/", func(c *fiber.Ctx) error {
-		nama := c.FormValue("nama")
-		usia := c.FormValue("usia")
-		usiaInt, _ := strconv.Atoi(usia)
+		name := c.FormValue("Name")
+		age := c.FormValue("Age")
+		ageInt, _ := strconv.Atoi(age)
 
-		data, err := controller.Create(nama, usiaInt)
-
-		if utils.SendError(err) {
-			utils.JsonError(nil, 500, "Failed create new user")
+		if name == "" {
+			fmt.Println("nama tidak boleh kosong")
 		}
+		if ageInt < 0 {
+			fmt.Println("Usia tidak boleh kosong")
+		}
+
+		createUser, err := controllers.Create(name, ageInt)
+
+		if err != nil {
+			fmt.Println("failed create new user")
+		}
+
 		return c.Status(200).JSON(fiber.Map{
-			"data": data,
+			"data": createUser,
 		})
 	})
 
 	app.Put("/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
-		nama := c.FormValue("nama")
-		usia := c.FormValue("usia")
-
-		// convert to int
-		usiaInt, _ := strconv.Atoi(usia)
+		name := c.FormValue("Name")
+		age := c.FormValue("Age")
+		ageInt, _ := strconv.Atoi(age)
 		idInt, _ := strconv.Atoi(id)
 
-		data, err := controller.Update(idInt, nama, usiaInt)
-
-		if utils.SendError(err) {
-			utils.JsonError(nil, 500, "Failed update user")
+		if name == "" {
+			fmt.Println("nama tidak boleh kosong")
 		}
+		if ageInt < 0 {
+			fmt.Println("Usia tidak boleh kosong")
+		}
+
+		updateUser, err := controllers.Update(idInt, name, ageInt)
+
+		if err != nil {
+			fmt.Println("failed create new user")
+		}
+
 		return c.Status(200).JSON(fiber.Map{
-			"data": data,
+			"data": updateUser,
 		})
 	})
 
 	app.Delete("/:id", func(c *fiber.Ctx) error {
 		id := c.Params("id")
-
-		// convert to int
 		idInt, _ := strconv.Atoi(id)
-
-		data, err := controller.Delete(idInt)
-
-		if utils.SendError(err) {
-			utils.JsonError(nil, 500, "Failed delete user")
-		}
+		deleteUser, _ := controllers.Delete(idInt)
 		return c.Status(200).JSON(fiber.Map{
-			"data": data,
+			"data": deleteUser,
 		})
 	})
 

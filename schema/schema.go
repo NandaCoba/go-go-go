@@ -7,13 +7,13 @@ import (
 )
 
 type User struct {
-	Id        uint
-	Nama      string
-	Usia      int
+	Id        uint `gorm:primaryKey`
+	Name      string
+	Age       int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func Schema(db *gorm.DB) {
-	db.AutoMigrate(User{})
+func Migrations(db *gorm.DB) {
+	db.AutoMigrate(&User{})
 }
